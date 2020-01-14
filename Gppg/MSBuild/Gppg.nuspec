@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>Gppg.Tool</id>
+    <version>0.0.2</version>
+    <authors>Gppg developers</authors>
+    <description>Gardens Point Parser Generator (Gppg) for .NET Core projects</description>
+  </metadata>
+  <files>
+    <!-- Compatible with .Net Standard 1.0 and up -->
+    <file src="_._" target="lib/netstandard1.0/" />
+    <file src="_._" target="lib/net20/" />
+
+    <!-- Framework specific target that includes the real run target below -->
+    <file src="Gppg.targets" target="build/netstandard1.0/Gppg.Tool.targets" />
+    <file src="Gppg.targets" target="build/net20/Gppg.Tool.targets" />
+
+    <!-- The target that actually runs the custom tool -->
+    <file src="RunGppg.targets" target="tools" />
+    <file src="$publishdir$\net20\**\*" target="tools/net20/" />
+    <file src="$publishdir$\netcoreapp2.0\**\*" target="tools/netcoreapp2.0/" />
+  </files>
+</package>

@@ -1,0 +1,35 @@
+<!-- RunCustomTool.targets -->
+<Project>
+  <PropertyGroup>
+    <_GppgTool>dotnet "$(MSBuildThisFileDirectory)/netcoreapp2.0/Gppg.dll"</_GppgTool>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup>
+    <GppgFile>
+      <OutFile>%(Identity).cs</OutFile>
+      <Gplex>false</Gplex>
+      <Nolines>false</Nolines>
+    </GppgFile>
+  </ItemDefinitionGroup>
+
+  <Target Name="_ResolveGppgFiles">
+    <!-- Is this something? Run gppg on all *.y files in project if no explicit GppgFile exist -->
+    <!--ItemGroup>
+      <GppgFile Condition=" '@(GppgFile)' == '' and '%(Extension)' == '.y' " Include="@(Content);@(None)" />
+      <GppgFile Condition=" '@(GppgFile)' == '' " Include="**\*.y" />
+    </ItemGroup-->
+  </Target>
+
+  <Target Name="GppgTool" BeforeTargets="CoreCompile" DependsOnTargets="PrepareForBuild;_ResolveGppgFiles" Inputs="@(GppgFile)" Outputs="@(GppgFile->'%(OutFile)')">
+    <ItemGroup>
+      <GppgFileToBuild Include="@(GppgFile)">
+        <OutFile>%(Outfile)</OutFile>
+        <NolinesArg Condition="%(Nolines) == 'true'">/nolines </NolinesArg>
+        <GplexArg Condition="%(Gplex) == 'true'">/gplex </GplexArg>
+      </GppgFileToBuild>
+    </ItemGroup>
+    <Message Text="Gppging @(GppgFileToBuild->'%(Identity)')" Importance="high" />
+    <Exec Command="$(_GppgTool) %(GppgFileToBuild.GplexArg) %(GppgFileToBuild.NolinesArg) /out:&quot;./%(GppgFileToBuild.Outfile)&quot; %(GppgFileToBuild.Identity)" />
+  </Target>
+
+</Project>
